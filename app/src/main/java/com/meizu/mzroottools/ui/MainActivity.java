@@ -1,4 +1,4 @@
-package com.meizu.mzroottools;
+package com.meizu.mzroottools.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -10,12 +10,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.meizu.mzroottools.R;
+import com.meizu.mzroottools.util.PhoneUtils;
 
 import java.util.ArrayList;
 import java.util.List;

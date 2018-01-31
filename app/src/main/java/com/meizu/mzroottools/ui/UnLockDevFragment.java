@@ -1,4 +1,4 @@
-package com.meizu.mzroottools;
+package com.meizu.mzroottools.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.meizu.mzroottools.R;
+import com.meizu.mzroottools.util.GetRootCode;
+import com.meizu.mzroottools.util.PhoneUtils;
 
 public class UnLockDevFragment extends Fragment implements View.OnClickListener {
 
@@ -40,9 +44,12 @@ public class UnLockDevFragment extends Fragment implements View.OnClickListener 
         button = view.findViewById(R.id.unlock_button);
         button.setOnClickListener(this);
 
-        hintView(false);
+        hintView(true);
     }
 
+    /**
+     * @param isFailed 解锁是否成功
+     */
     private void hintView(boolean isFailed){
         if (!isFailed) {
             //没有获取已经获取了权限
@@ -67,21 +74,9 @@ public class UnLockDevFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.unlock_button:
-                //进行解锁操作(network..)
-                Toast.makeText(getContext(),"解锁设备",Toast.LENGTH_SHORT).show();
-//                OkHttpClient okHttpClient = new OkHttpClient();
-//                Request request = new Request.Builder().url("https://suggest.taobao.com/sug?code=utf-8&q=%E5%8D%AB%E8%A1%A3&callback=cb").build();
-//                okHttpClient.newCall(request).enqueue(new Callback() {
-//                    @Override
-//                    public void onFailure(Call call, IOException e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onResponse(Call call, Response response) throws IOException {
-//                        Log.d("onResponse: ", response.body().string());
-//                    }
-//                });
+                //网络请求获取root码并设置root码解锁设备
+                Toast.makeText(getContext(),"解锁",Toast.LENGTH_SHORT).show();
+                GetRootCode.getRootCodeFromNetwork("");
                 break;
             default:
                 break;

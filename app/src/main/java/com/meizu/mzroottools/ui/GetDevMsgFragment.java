@@ -1,4 +1,4 @@
-package com.meizu.mzroottools;
+package com.meizu.mzroottools.ui;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -31,6 +31,10 @@ import android.widget.Toast;
 import com.meizu.account.oauth.MzAccountUtil;
 import com.meizu.account.oauth.MzAuthenticator;
 import com.meizu.account.oauth.OnMzAuthListener;
+import com.meizu.mzroottools.BuildConfig;
+import com.meizu.mzroottools.R;
+import com.meizu.mzroottools.pojo.DeviceMessage;
+import com.meizu.mzroottools.util.PhoneUtils;
 
 import java.lang.reflect.Method;
 
@@ -76,9 +80,9 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
         no_permission = view.findViewById(R.id.no_permission);
 
         getMsgCard = view.findViewById(R.id.getMsgCard);
-        ViewGroup.LayoutParams params = getMsgCard.getLayoutParams();
-        params.height = params.width;
-        getMsgCard.setLayoutParams(params);
+//        ViewGroup.LayoutParams params = getMsgCard.getLayoutParams();
+//        params.height = params.width ;
+//        getMsgCard.setLayoutParams(params);
         getMsgCard.setOnClickListener(this);
 
         go_login = view.findViewById(R.id.go_login);
@@ -129,7 +133,7 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.getMsgCard:
                 //获取信息
-                getDevMsg(true);
+                getDevMsg();
                 //Toast.makeText(getContext(), "获取设备信息：" + Build.MODEL + getSerialNumber(), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.dev_msg_prompt:
@@ -140,19 +144,13 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private void getDevMsg(boolean successOrFailed) {
+    private void getDevMsg() {
         hintView(2);
-        if (successOrFailed) {
-            dev_msg_img.setImageResource(R.mipmap.ic_launcher_round);
-            dev_mark.setText("获取成功");
-            dev_mark.setTextColor(Color.BLACK);
-            dev_msg_msg.setText("您的设备信息如下\n\n" + "设备型号：" + Build.MODEL + "\n\n" + "SN号：" + getSerialNumber() + "\n\n"
-                    + "PSN：" + "HAKSDF" + "\n\n" + "CHPID：" + "SDFADFAFAF");
-            dev_msg_msg.setTextColor(Color.BLACK);
-            dev_msg_prompt.setText("请至网页申请页填写以上设备信息提交解锁申请");
-            dev_msg_prompt.setTextColor(Color.GRAY);
-            dev_msg_prompt.setClickable(false);
-        } else {
+        PhoneUtils.setContext(getContext());
+        DeviceMessage msg = new DeviceMessage(PhoneUtils.getPhoneModel(),PhoneUtils.getPhoneSn()
+                ,PhoneUtils.getPsnAndChipId(),PhoneUtils.getPsnAndChipId());
+        //判断设备信息是否获取完整
+        if (!msg.haveAllMsg()) {
             dev_msg_img.setImageResource(R.mipmap.ic_launcher_round);
             dev_mark.setText("获取失败");
             dev_mark.setTextColor(Color.BLACK);
@@ -163,25 +161,21 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
             dev_msg_prompt.setGravity(Gravity.CENTER_HORIZONTAL);
             dev_msg_prompt.setTextColor(Color.BLUE);
             dev_msg_prompt.setClickable(true);
+        } else {
+            dev_msg_img.setImageResource(R.mipmap.ic_launcher_round);
+            dev_mark.setText("获取成功");
+            dev_mark.setTextColor(Color.BLACK);
+            dev_msg_msg.setText("您的设备信息如下\n\n" + "设备型号：" + msg.getdeviceModel() + "\n\n"
+                    + "SN号：" + msg.getDeviceSn() + "\n\n"
+                    + "PSN：" + msg.getDevicePsn() + "\n\n"
+                    + "CHPID：" + msg.getDeviceChipid());
+            dev_msg_msg.setTextColor(Color.BLACK);
+            dev_msg_prompt.setText("请至网页申请页填写以上设备信息提交解锁申请");
+            dev_msg_prompt.setTextColor(Color.GRAY);
+            dev_msg_prompt.setClickable(false);
         }
     }
 
-    //获取序列号
-
-    private String getSerialNumber() {
-        String serial = null;
-        try {
-
-            Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class);
-            serial = (String) get.invoke(c, "ro.serialno");
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        return serial;
-
-    }
 
     private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
