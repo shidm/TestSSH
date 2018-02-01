@@ -44,16 +44,16 @@ public class UnLockDevFragment extends Fragment implements View.OnClickListener 
         button = view.findViewById(R.id.unlock_button);
         button.setOnClickListener(this);
 
-        hintView(true);
+        hintView(PhoneUtils.isPhoneRooted(getContext()));
     }
 
     /**
-     * @param isFailed 解锁是否成功
+     * @param isRoot 解锁是否成功
      */
-    private void hintView(boolean isFailed){
-        if (!isFailed) {
-            //没有获取已经获取了权限
-            Log.d(TAG, String.valueOf(isFailed));
+    private void hintView(boolean isRoot){
+        if (isRoot) {
+            //已经获取了权限
+            Log.d(TAG, String.valueOf(isRoot));
             unlock_img.setImageResource(R.mipmap.ic_launcher_round);
             unlock_msg_mark.setText("解锁成功");
             unlock_msg_prompt.setText("已成功获取本机的Root权限");
@@ -62,7 +62,7 @@ public class UnLockDevFragment extends Fragment implements View.OnClickListener 
             button.setVisibility(View.GONE);
         }else {
             //没有获取
-            Log.d(TAG, String.valueOf(isFailed));
+            Log.d(TAG, String.valueOf(isRoot));
             unlock_img.setImageResource(R.mipmap.ic_launcher_round);
 
             unlock_msg.setVisibility(View.GONE);
@@ -76,7 +76,8 @@ public class UnLockDevFragment extends Fragment implements View.OnClickListener 
             case R.id.unlock_button:
                 //网络请求获取root码并设置root码解锁设备
                 Toast.makeText(getContext(),"解锁",Toast.LENGTH_SHORT).show();
-                GetRootCode.getRootCodeFromNetwork("");
+                Log.d(TAG, "isRoot: "+PhoneUtils.isPhoneRooted(getContext()));
+                //GetRootCode.getRootCodeFromNetwork("");
                 break;
             default:
                 break;

@@ -74,10 +74,10 @@ public class ReflectHelper {
      * @return					返回执行结果
      * @throws Exception		如果执行失败，抛出异常
      */
-    public static Object invoke(Object obj, String methodName, Object[] params) throws Exception{
+    public static Object invoke(Object obj, String methodName, Object... params) throws Exception{
         return invoke(obj.getClass(), obj, methodName, params);
     }
-    private static Object invoke(Class<?> objClass, Object obj, String methodName, Object[] params) throws Exception{
+    private static Object invoke(Class<?> objClass, Object obj, String methodName, Object... params) throws Exception{
         if(params == null || params.length == 0){
 //			Method method = objClass.getMethod(methodName);
             String key = objClass.getName() + "_" +  methodName;
@@ -141,7 +141,7 @@ public class ReflectHelper {
     public static Object invoke(Object obj, String methodName, Class<?>[] paramsTypes, Object[] params) throws Exception{
         return invoke(obj.getClass(), obj, methodName, paramsTypes, params);
     }
-    private static Object invoke(Class<?> objClass, Object obj, String methodName, Class<?>[] paramsTypes, Object[] params) throws Exception{
+    private static Object invoke(Class<?> objClass, Object obj, String methodName, Class<?>[] paramsTypes, Object... params) throws Exception{
         if(params == null || params.length == 0){
 //			Method method = objClass.getMethod(methodName);
             String key = objClass.getName() + "_" +  methodName;

@@ -138,6 +138,7 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.dev_msg_prompt:
                 Toast.makeText(getContext(), "重新获取数据", Toast.LENGTH_SHORT).show();
+                getDevMsg();
                 break;
             default:
                 break;
@@ -146,9 +147,8 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
 
     private void getDevMsg() {
         hintView(2);
-        PhoneUtils.setContext(getContext());
         DeviceMessage msg = new DeviceMessage(PhoneUtils.getPhoneModel(),PhoneUtils.getPhoneSn()
-                ,PhoneUtils.getPsnAndChipId(),PhoneUtils.getPsnAndChipId());
+                ,PhoneUtils.getPsnAndChipId(getContext()));
         //判断设备信息是否获取完整
         if (!msg.haveAllMsg()) {
             dev_msg_img.setImageResource(R.mipmap.ic_launcher_round);
@@ -167,15 +167,13 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
             dev_mark.setTextColor(Color.BLACK);
             dev_msg_msg.setText("您的设备信息如下\n\n" + "设备型号：" + msg.getdeviceModel() + "\n\n"
                     + "SN号：" + msg.getDeviceSn() + "\n\n"
-                    + "PSN：" + msg.getDevicePsn() + "\n\n"
-                    + "CHPID：" + msg.getDeviceChipid());
+                    + "CHPID：" + msg.getdevicePsnAndChipId());
             dev_msg_msg.setTextColor(Color.BLACK);
             dev_msg_prompt.setText("请至网页申请页填写以上设备信息提交解锁申请");
             dev_msg_prompt.setTextColor(Color.GRAY);
             dev_msg_prompt.setClickable(false);
         }
     }
-
 
     private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

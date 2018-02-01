@@ -115,7 +115,7 @@ public class PhoneUtils {
             return sIsFlymeRom;
         }
         try {
-            boolean b = (Boolean) ReflectHelper.invokeStatic(CLASS_NAME_BUILD_EXT, "isFlymeRom", null);
+            boolean b = (Boolean) ReflectHelper.invokeStatic(CLASS_NAME_BUILD_EXT, "isFlymeRom", new Object[]{});
             sIsFlymeRom = b ? Boolean.TRUE : Boolean.FALSE;
             return sIsFlymeRom;
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class PhoneUtils {
             return sIsProductInternational;
         }
         try {
-            boolean b = (Boolean) ReflectHelper.invokeStatic(CLASS_NAME_BUILD_EXT, "isProductInternational", null);
+            boolean b = (Boolean) ReflectHelper.invokeStatic(CLASS_NAME_BUILD_EXT, "isProductInternational", new Object[]{});
             sIsProductInternational = b ? Boolean.TRUE : Boolean.FALSE;
             return sIsProductInternational;
         } catch (Exception e) {
@@ -162,10 +162,12 @@ public class PhoneUtils {
         }
         //deviceStatus 为空则代表当前固件没有反射接口，此时可直接将 false 赋给缓存
         if (TextUtils.isEmpty(deviceStatus)) {
+            Log.d(TAG, "deviceStatus: null");
             sIsPhoneRooted = Boolean.FALSE;
         } else {
             Object deviceStateManager = context.getSystemService(deviceStatus);
             if (deviceStateManager == null) {
+                Log.d(TAG, "deviceStateManager: null");
                 //deviceStateManager 在手机没有 boot complete 时会返回 null，此时暂时返回 false, 不将结果赋给缓存
                 //但因为手机最终肯定会启动完成并且拿到 deviceStateManager，所以 sIsPhoneRooted 会在其不为空时再赋值
                 return false;
@@ -197,7 +199,7 @@ public class PhoneUtils {
         UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         try {
             //This method only works with Android 5.0
-            boolean b = (Boolean) ReflectHelper.invoke(userManager, "isGuestUser", null);
+            boolean b = (Boolean) ReflectHelper.invoke(userManager, "isGuestUser", new Object[]{});
             sIsGuestMode = b ? Boolean.TRUE : Boolean.FALSE;
             return sIsGuestMode;
         } catch (Exception e) {
@@ -213,80 +215,89 @@ public class PhoneUtils {
         return sIsIndiaLocale;
     }
 
-    public synchronized static String getPsnAndChipId() {
+    public synchronized static String getPsnAndChipId(Context context) {
         String psnAndChipId = null;
         String deviceStatus = "";
         try {
             deviceStatus = (String) ReflectHelper.getStaticField(CLASS_NAME_CONTEXT_EXT, "DEVICE_STATE_SERVICE");
-            if (deviceStatus != null) {
-                Log.d(TAG, "deviceStatus: " + deviceStatus);
-                @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
-                if (deviceStateManager == null) {
-                    Log.d(TAG, "deviceStateManager: NULL");
-                    return psnAndChipId;
-                } else {
-                    try {
-                        psnAndChipId = (String) ReflectHelper.invoke(deviceStateManager, "getPsnAndChipId", null);
-                    } catch (Exception e) {
-                        Log.e("cwj-root", "getPsnAndChipId E: " + e, e);
-                    }
-                    Log.d("cwj-root", "getPsnAndChipId -> " + psnAndChipId);
-                }
-            }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(deviceStatus)) {
+            Log.d(TAG, "deviceStatus: null");
+            return psnAndChipId;
+        } else {
+            @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
+            if (deviceStateManager == null) {
+                Log.d(TAG, "deviceStateManager: NULL");
+                return psnAndChipId;
+            } else {
+                try {
+                    psnAndChipId = (String) ReflectHelper.invoke(deviceStateManager, "getPsnAndChipId", new Object[]{});
+                } catch (Exception e) {
+                    Log.e("cwj-root", "getPsnAndChipId E: " + e, e);
+                    return psnAndChipId;
+                }
+                Log.d("cwj-root", "getPsnAndChipId -> " + psnAndChipId);
+            }
         }
         return psnAndChipId;
     }
 
-    public synchronized static String getRootSignatureCode() {
+    public synchronized static String getRootSignatureCode(Context context) {
         String rootSignatureCode = null;
         String deviceStatus = "";
         try {
             deviceStatus = (String) ReflectHelper.getStaticField(CLASS_NAME_CONTEXT_EXT, "DEVICE_STATE_SERVICE");
-            if (deviceStatus != null) {
-                Log.d(TAG, "deviceStatus: " + deviceStatus);
-                @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
-                if (deviceStateManager == null) {
-                    Log.d(TAG, "deviceStateManager: NULL");
-                    return rootSignatureCode;
-                } else {
-                    try {
-                        rootSignatureCode = (String) ReflectHelper.invoke(deviceStateManager, "getRootSignatureCode", null);
-                    } catch (Exception e) {
-                        Log.e("cwj-root", "getPsnAndChipId E: " + e, e);
-                    }
-                    Log.d("cwj-root", "getPsnAndChipId -> " + rootSignatureCode);
-                }
-            }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(deviceStatus)) {
+            return rootSignatureCode;
+        } else {
+            Log.d(TAG, "deviceStatus: " + deviceStatus);
+            @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
+            if (deviceStateManager == null) {
+                Log.d(TAG, "deviceStateManager: NULL");
+                return rootSignatureCode;
+            } else {
+                try {
+                    rootSignatureCode = (String) ReflectHelper.invoke(deviceStateManager, "getRootSignatureCode", new Object[]{});
+                } catch (Exception e) {
+                    Log.e("cwj-root", "getPsnAndChipId E: " + e, e);
+                    return rootSignatureCode;
+                }
+                Log.d("cwj-root", "getPsnAndChipId -> " + rootSignatureCode);
+            }
         }
         return rootSignatureCode;
     }
 
-    public synchronized static int setRootSignatureCode(byte[] rootSignatureCode) {
+    public synchronized static int setRootSignatureCode(Context context, byte[] rootSignatureCode) {
         int ret = -1;
         String deviceStatus = "";
         try {
             deviceStatus = (String) ReflectHelper.getStaticField(CLASS_NAME_CONTEXT_EXT, "DEVICE_STATE_SERVICE");
-            if (deviceStatus != null) {
-                Log.d(TAG, "deviceStatus: " + deviceStatus);
-                @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
-                if (deviceStateManager == null) {
-                    Log.d(TAG, "deviceStateManager: NULL");
-                    return ret;
-                } else {
-                    try {
-                        ret = (int) ReflectHelper.invoke(deviceStateManager, "setRootSignatureCode", new String[]{new String(rootSignatureCode)});
-                    } catch (Exception e) {
-                        Log.e("cwj-root", "setRootSignatureCode E: " + e, e);
-                    }
-                    Log.d("cwj-root", "setRootSignatureCode -> " + rootSignatureCode + " | ret = " + ret);
-                }
-            }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(deviceStatus)) {
+            return ret;
+        } else {
+            Log.d(TAG, "deviceStatus: " + deviceStatus);
+            @SuppressLint("WrongConstant") Object deviceStateManager = context.getSystemService(deviceStatus);
+            if (deviceStateManager == null) {
+                Log.d(TAG, "deviceStateManager: NULL");
+                return ret;
+            } else {
+                try {
+                    ret = (int) ReflectHelper.invoke(deviceStateManager, "setRootSignatureCode", rootSignatureCode);
+                } catch (Exception e) {
+                    Log.e("cwj-root", "setRootSignatureCode E: " + e, e);
+                    return ret;
+                }
+                Log.d("cwj-root", "setRootSignatureCode -> " + rootSignatureCode + " | ret = " + ret);
+            }
         }
         return ret;
     }

@@ -7,8 +7,7 @@ package com.meizu.mzroottools.pojo;
 public class DeviceMessage {
     private String deviceModel;
     private String deviceSn;
-    private String devicePsn;
-    private String deviceChipid;
+    private String devicePsnAndChipId;
 
     public DeviceMessage() {
     }
@@ -16,14 +15,12 @@ public class DeviceMessage {
     /**
      * @param deviceModel 设备型号
      * @param deviceSn 设备序列号
-     * @param devicePsn 设备PSN码
-     * @param deviceChipid 设备CHIPID码
+     * @param devicePsnAndChipId 设备CHIPID码
      */
-    public DeviceMessage(String deviceModel, String deviceSn, String devicePsn, String deviceChipid) {
+    public DeviceMessage(String deviceModel, String deviceSn, String devicePsnAndChipId) {
         this.deviceModel = deviceModel;
         this.deviceSn = deviceSn;
-        this.devicePsn = devicePsn;
-        this.deviceChipid = deviceChipid;
+        this.devicePsnAndChipId = devicePsnAndChipId;
     }
 
     public String getdeviceModel() {
@@ -42,25 +39,17 @@ public class DeviceMessage {
         this.deviceSn = deviceSn;
     }
 
-    public String getDevicePsn() {
-        return devicePsn;
+    public String getdevicePsnAndChipId() {
+        return devicePsnAndChipId;
     }
 
-    public void setDevicePsn(String devicePsn) {
-        this.devicePsn = devicePsn;
-    }
-
-    public String getDeviceChipid() {
-        return deviceChipid;
-    }
-
-    public void setDeviceChipid(String deviceChipid) {
-        this.deviceChipid = deviceChipid;
+    public void setdevicePsnAndChipId(String devicePsnAndChipId) {
+        this.devicePsnAndChipId = devicePsnAndChipId;
     }
 
     public boolean haveAllMsg() {
         if (deviceModel == null || deviceSn == null
-                || devicePsn == null || deviceChipid == null) {
+                || devicePsnAndChipId == null) {
             return false;
         }
         return true;
