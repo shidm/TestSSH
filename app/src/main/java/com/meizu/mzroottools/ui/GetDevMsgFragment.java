@@ -146,6 +146,12 @@ public class GetDevMsgFragment extends Fragment implements View.OnClickListener 
     }
 
     private void getDevMsg() {
+//        Log.d(TAG, "getRootCode: "
+//                + PhoneUtils.getRootSignatureCode(getContext())
+//                + "______"
+//                + PhoneUtils.isFlymeRom()
+//                + "______"
+//                + PhoneUtils.getPsnAndChipId(getContext()));
         hintView(2);
         DeviceMessage msg = new DeviceMessage(PhoneUtils.getPhoneModel(),PhoneUtils.getPhoneSn()
                 ,PhoneUtils.getPsnAndChipId(getContext()));
